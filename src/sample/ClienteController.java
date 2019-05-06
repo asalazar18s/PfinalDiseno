@@ -14,6 +14,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class ClienteController implements Initializable{
+    //this class handles client UI and client connections to both servers
     private DataInputStream fromServer;
     private DataOutputStream toServer;
     private DataInputStream fromServerClient;
@@ -47,28 +48,8 @@ public class ClienteController implements Initializable{
     public void onPress() throws IOException {
         System.out.println("");
 
+        //TODO: decide how or when to connect to the servers???
         connectToServers();
-        //toServer.writeUTF("connected");
-
-
-
-        /*new Thread(() ->
-        {
-
-            try
-            {
-                while(true) {
-                    String mensaje = fromServerClient.readUTF();
-                    mensajeArea.appendText(mensaje);
-
-                }
-            }
-            catch (Exception ex)
-            {
-                ex.printStackTrace();
-            }
-        }).start();*/
-
     }
 
     public void onPress2() throws IOException {
@@ -80,30 +61,27 @@ public class ClienteController implements Initializable{
 
         try
         {
-            // Create a socket to connect to the server
+            // Create a socket to connect to the Mainserver
             Socket socket = new Socket("localhost", 8080);
 
-            //crea clienteServidor con puerto aleatorio
+            //establishes a clientServer with a random port
             ClienteServidor cs = new ClienteServidor(0);
 
-
+            //create a socket to the clientServer
             Socket socketToCServer = new Socket("localhost", cs.socketNumber);
 
-            // Create an input stream to receive data from the server
-            fromServer = new DataInputStream(socket.getInputStream());
+            // Create an input stream to receive data from the clientServer
             fromServerClient = new DataInputStream(socketToCServer.getInputStream());
 
-            // Create an output stream to send data to the server
+            // Create an output stream to send data to the MainServer
             toServer = new DataOutputStream(socket.getOutputStream());
-            toServerClient = new DataOutputStream(socketToCServer.getOutputStream());
 
+            //send the port that was established for the clientServer to the MainServer
             toServer.writeInt(cs.socketNumber);
         }
         catch (Exception ex) {
             ex.printStackTrace();
         }
-
-        // Control the game on a separate thread
 
     }
 }

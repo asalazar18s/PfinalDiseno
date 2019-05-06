@@ -13,30 +13,33 @@ import java.util.Date;
 import java.util.ResourceBundle;
 
 public class Controller implements Initializable{
+    //This handles the Main Server UI and the init of the main server
+
+
+    //Data model that has to hold the sockets that are connected to mainServer
     MainServer mServer = new MainServer();
     Integer portNumber = 8081;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        //Method that runs at start of mainServer UI
 
-        //socket Initializer
+        //this thread handles the creation of the MainServer and
+        //the loop to constantly accept new connections
         new Thread( ()-> {
             try {
-                //Start Server with desired port on the socket
-
+                //Start the server
                 ServerSocket serverSocket = new ServerSocket(8080);
-                System.out.println(serverSocket.toString());
 
-
-                //Maybe add info to pop up in terminal that server has been created
+                //show in terminal server has started
                 System.out.println("Server Started: at " + new Date() + "\n");
 
+                //main loop that will accept connections
                 while (true) {
-                    //accept a new socket connection
+                    //accept a new socket connection, this socket comes from client
                     Socket clientSocket = serverSocket.accept();
 
-
-                    //main thread handler
+                    //thread that will handle what to do with new socket
                     new Thread(new HandleAclient(clientSocket)).start();
                 }
             } catch (IOException e) {
@@ -56,39 +59,32 @@ public class Controller implements Initializable{
 
         public HandleAclient(Socket clientSocket) {
             this.clientSocket = clientSocket;
-
-
         }
 
         //thread to be run
         public void run() {
             try {
-                //input/output handler for clientSocket might have to change to objectInput...
-                //only read from never write to
+                //clientSocket only writes to MainServer
+                //establish the inputStream
                 DataInputStream inputFromClient = new DataInputStream(
                         clientSocket.getInputStream());
 
-                //input/output handler for serverSocket might have to change to objectInput...
-                //only write to
-
-
-
+                //Questionable
                 ObjectOutputStream objectOutputToClient = new ObjectOutputStream(
                         clientSocket.getOutputStream());
 
-
-                //loop will listen for any clientSocket info
-                //if any change is made then we handle the serverSocket to receive the change
-                //same idea on sercerSocket???
-
+                //get from the client the port that was established for the client server
                 int portToConnect = inputFromClient.readInt();
                 System.out.println("port: " +portToConnect);
+
+                //create a connection socket to the clientServer
                 Socket toCServerSocket = new Socket("localhost",portToConnect);
 
+                //create an output stream to the clientServer Socket
                 DataOutputStream outputToClient = new DataOutputStream(
                         toCServerSocket.getOutputStream());
 
-
+                //TODO: we need to determine a proper way to handle listening events
                 while (true) {
                     String type = inputFromClient.readUTF();
 

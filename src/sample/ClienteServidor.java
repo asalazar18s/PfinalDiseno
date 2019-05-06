@@ -9,39 +9,34 @@ import java.net.Socket;
 import java.util.Date;
 
 public class ClienteServidor {
+    //this class handles the clientServer
 
     public Integer socketNumber;
 
     ClienteServidor(Integer PortNumber) throws IOException {
+        //constructor that establishes the clientServer
         socketNumber = 0;
+
+        //create new server with a randomized portNumber
         ServerSocket serverSocket = new ServerSocket(PortNumber);
-        System.out.println(serverSocket.toString());
+
+        //save the serverPort in the socketNumber so that its sent to the client
+        //so that the client sends it to the Server
         socketNumber = serverSocket.getLocalPort();
+
+        //this thread will handle connections to the clientServer
         new Thread( ()-> {
             try {
-                //Start Server with desired port on the socket
 
-                //Maybe add info to pop up in terminal that server has been created
                 System.out.println("Server Started: at " + new Date() + "\n");
 
-                //runLater commands can be avoided unless required for th GUI
-
-                //loop to maintain server up and running
-
                 while (true) {
-                    //accept a new socket connection
-                    Socket clientSocket = serverSocket.accept();
 
+                    //accept a new socket connection from the MainServer
+                    Socket mainServerClientSocket = serverSocket.accept();
 
-
-                    //create new socket connection to clientServer
-                    //Socket toCServerSocket = new Socket("localhost", portNumber);
-
-
-
-                    //portNumber ++;
-                    //main thread handler
-                    new Thread(new HandleAclient(clientSocket)).start();
+                    //client handler
+                    new Thread(new HandleAclient(mainServerClientSocket)).start();
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -76,13 +71,10 @@ public class ClienteServidor {
                         clientSocket.getOutputStream());
 
 
-                //loop will listen for any clientSocket info
-                //if any change is made then we handle the serverSocket to receive the change
-                //same idea on serverSocket???
+                //TODO: we need to determine a proper way to handle listening events
+                //this loop handles listening of changes from mainServer side.
+                
                 while (true) {
-                    //String type = inputFromClient.readUTF();
-
-                    //System.out.println(type);
 
                 }
 
