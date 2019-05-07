@@ -73,7 +73,7 @@ public class ClienteServidor {
 
                 //TODO: we need to determine a proper way to handle listening events
                 //this loop handles listening of changes from mainServer side.
-                
+
                 while (true) {
 
                 }

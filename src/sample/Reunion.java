@@ -1,8 +1,9 @@
 package sample;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Reunion {
+public class Reunion implements Serializable {
 
     private ArrayList<String> Invitados;
     private String Tema;
@@ -20,7 +21,9 @@ public class Reunion {
         FechaFin = fechaFin;
     }
 
-
-
+    @Override
+    public String toString() {
+        return "Invitados: " + Invitados.size() + ", Organizador: " + Organizador;
+    }
 }
 

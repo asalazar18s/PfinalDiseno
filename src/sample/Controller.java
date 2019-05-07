@@ -2,13 +2,11 @@ package sample;
 
 import javafx.fxml.Initializable;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.ResourceBundle;
 
@@ -19,6 +17,7 @@ public class Controller implements Initializable{
     //Data model that has to hold the sockets that are connected to mainServer
     MainServer mServer = new MainServer();
     Integer portNumber = 8081;
+    static String clientName;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -69,13 +68,22 @@ public class Controller implements Initializable{
                 DataInputStream inputFromClient = new DataInputStream(
                         clientSocket.getInputStream());
 
+                //Instance of Reunion
+                ObjectInputStream objectFromClient=new ObjectInputStream(
+                        clientSocket.getInputStream());
+
                 //Questionable
                 ObjectOutputStream objectOutputToClient = new ObjectOutputStream(
                         clientSocket.getOutputStream());
 
                 //get from the client the port that was established for the client server
-                int portToConnect = inputFromClient.readInt();
-                System.out.println("port: " +portToConnect);
+                String  receivedInfo = inputFromClient.readUTF();
+
+                //parse the receivedInfo into port number and clientName
+                clientName = receivedInfo.split(":")[1];
+                int portToConnect = Integer.valueOf(receivedInfo.split(":")[0]);
+
+                System.out.println("port: " +portToConnect + " Name: " + clientName);
 
                 //create a connection socket to the clientServer
                 Socket toCServerSocket = new Socket("localhost",portToConnect);
@@ -84,11 +92,24 @@ public class Controller implements Initializable{
                 DataOutputStream outputToClient = new DataOutputStream(
                         toCServerSocket.getOutputStream());
 
+                //store client and socket info into Administrador dictionary
+                ArrayList<Socket> holder = new ArrayList<>();
+                holder.add(clientSocket);
+                holder.add(toCServerSocket);
+                //[0] socket that listens to client
+                //[1] socket that writes to clientServer
+                mServer.Administrador.put(clientName,holder);
+
                 //TODO: we need to determine a proper way to handle listening events
                 while (true) {
-                    String type = inputFromClient.readUTF();
+                    //String type = inputFromClient.readUTF();
+                    //outputToClient.writeUTF(type);
 
-                    outputToClient.writeUTF(type);
+                    Reunion reunionReceived=(Reunion) objectFromClient.readObject();
+
+                    System.out.println(reunionReceived.toString());
+
+
 
                 }
 

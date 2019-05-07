@@ -7,8 +7,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class MainServer {
-    private Map<String, ArrayList<Socket>> Administrador;
-    private ArrayList<Reunion> Reuniones;
+    public Map<String, ArrayList<Socket>> Administrador;
+    public ArrayList<Reunion> Reuniones;
 
     public Map<String, ArrayList<Socket>> getAdministrador() {
         return Administrador;
@@ -28,12 +28,14 @@ public class MainServer {
 
 
 
-    public MainServer(){}
+    public MainServer(){
+        Administrador = new HashMap<String, ArrayList<Socket>>();
+        Reuniones = new ArrayList<Reunion>();
+    }
 
     public MainServer(Map<String, ArrayList<Socket>> administrador, ArrayList<Reunion> reuniones) {
         Administrador = administrador;
         Reuniones = reuniones;
-
     }
 
 

@@ -9,6 +9,7 @@ import javafx.scene.control.TextField;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -19,6 +20,7 @@ public class ClienteController implements Initializable{
     private DataOutputStream toServer;
     private DataInputStream fromServerClient;
     private DataOutputStream toServerClient;
+    private ObjectOutputStream objectToServer;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -29,6 +31,8 @@ public class ClienteController implements Initializable{
     public Button boton1;
     @FXML
     public Button boton2;
+    @FXML
+    public Button boton3;
     @FXML
     public TextField Nombre;
     @FXML
@@ -56,6 +60,11 @@ public class ClienteController implements Initializable{
         toServerClient.writeUTF(mensajeArea.getText());
     }
 
+    public void onPress3() throws IOException {
+        //TODO:Rodrigo porfavor no te brajes haz el combobox y el refresh
+
+    }
+
 
     private void connectToServers() {
 
@@ -75,9 +84,16 @@ public class ClienteController implements Initializable{
 
             // Create an output stream to send data to the MainServer
             toServer = new DataOutputStream(socket.getOutputStream());
+            objectToServer = new ObjectOutputStream(socket.getOutputStream());
 
-            //send the port that was established for the clientServer to the MainServer
-            toServer.writeInt(cs.socketNumber);
+
+            //capture client name from textBox
+            String clientName = Nombre.getText();
+
+            String toSend = cs.socketNumber + ":" + clientName;
+
+            //send the port  and the name of the client that was established for the clientServer to the MainServer
+            toServer.writeUTF(toSend);
         }
         catch (Exception ex) {
             ex.printStackTrace();
