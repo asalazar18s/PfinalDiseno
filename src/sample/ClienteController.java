@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 public class ClienteController implements Initializable{
@@ -57,9 +58,13 @@ public class ClienteController implements Initializable{
     }
 
     public void onPress2() throws IOException {
-        toServerClient.writeUTF(mensajeArea.getText());
-    }
+        Reunion R = new Reunion(new ArrayList<String>(), Tema.getText(),Nombre.getText(),
+                lugar.getText(), Finicio.getText(), Ffinal.getText());
 
+        objectToServer.writeObject(R);
+
+
+    }
     public void onPress3() throws IOException {
         //TODO:Rodrigo porfavor no te brajes haz el combobox y el refresh
 
