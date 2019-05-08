@@ -70,7 +70,7 @@ public class ClienteController implements Initializable{
         //invitadosLista.add(Nombre.getText());
         Reunion R = new Reunion(new ArrayList<>(invitadosLista), Tema.getText(),Nombre.getText(),
                 lugar.getText(), Finicio.getText(), Ffinal.getText());
-
+        objectToServer.reset();
         objectToServer.writeObject(R);
 
 
@@ -144,7 +144,8 @@ public class ClienteController implements Initializable{
 
                 ObjectOutputStream objectOutputToClient = new ObjectOutputStream(
                         clientSocket.getOutputStream());
-                ObjectInputStream objectInputStream = new ObjectInputStream(clientSocket.getInputStream());
+                ObjectInputStream objectInputStream = new ObjectInputStream(
+                        clientSocket.getInputStream());
 
 
                 //TODO: we need to determine a proper way to handle listening events

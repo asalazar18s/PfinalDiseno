@@ -72,9 +72,6 @@ public class Controller implements Initializable{
                 ObjectInputStream objectFromClient=new ObjectInputStream(
                         clientSocket.getInputStream());
 
-                //Questionable
-                ObjectOutputStream objectOutputToClient = new ObjectOutputStream(
-                        clientSocket.getOutputStream());
 
                 //get from the client the port that was established for the client server
                 String  receivedInfo = inputFromClient.readUTF();
@@ -89,8 +86,7 @@ public class Controller implements Initializable{
                 Socket toCServerSocket = new Socket("localhost",portToConnect);
 
                 //create an output stream to the clientServer Socket
-                DataOutputStream outputToClient = new DataOutputStream(
-                        toCServerSocket.getOutputStream());
+
 
                 //store client and socket info into Administrador dictionary
                 ArrayList<Socket> holder = new ArrayList<>();
@@ -116,6 +112,8 @@ public class Controller implements Initializable{
                             Socket socket = mServer.Administrador.get(nombre).get(1);
                             ObjectOutputStream stream = new ObjectOutputStream(socket.getOutputStream());
                             stream.writeObject(reunionReceived);
+
+                            //socket.close();
                         }
                     }
 

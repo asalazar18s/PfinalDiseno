@@ -74,7 +74,7 @@ public class ClienteServidor {
                 //only write to
 
                 objectOutputToClient = new ObjectOutputStream(clientSocket.getOutputStream());
-                objectInputStream = new ObjectInputStream(serverSocket.getInputStream());
+
 
 
 
@@ -83,10 +83,11 @@ public class ClienteServidor {
 
                 while (true) {
 
+                    objectInputStream = new ObjectInputStream(serverSocket.getInputStream());
                     Reunion reunion = (Reunion) objectInputStream.readObject();
                     //ObjectOutputStream output = new ObjectOutputStream(socket.getOutputStream());
                     objectOutputToClient.writeObject(reunion);
-                    objectOutputToClient.reset();
+
                     //System.out.println(reunion.toString());
                 }
 
@@ -98,4 +99,7 @@ public class ClienteServidor {
         }
 
     }
+
+
+
 }
