@@ -5,8 +5,11 @@ import java.util.ArrayList;
 
 public class Reunion implements Serializable {
 
+
+
     private ArrayList<String> Invitados;
     private String Tema;
+
     private String Organizador;
     private String Lugar;
     private String FechaInicio;
@@ -24,6 +27,13 @@ public class Reunion implements Serializable {
     @Override
     public String toString() {
         return "Invitados: " + Invitados.size() + ", Organizador: " + Organizador;
+    }
+
+    public String getOrganizador() {
+        return Organizador;
+    }
+    public ArrayList<String> getInvitados() {
+        return Invitados;
     }
 }
 

@@ -105,7 +105,16 @@ public class Controller implements Initializable{
                     //String type = inputFromClient.readUTF();
                     //outputToClient.writeUTF(type);
 
-                    Reunion reunionReceived=(Reunion) objectFromClient.readObject();
+                    Reunion reunionReceived = (Reunion) objectFromClient.readObject();
+                    mServer.Reuniones.add(reunionReceived);
+
+                    for (int i = 0; i < reunionReceived.getInvitados().size(); i++)
+                    {
+                        String nombre = reunionReceived.getInvitados().get(i);
+                        Socket socket = mServer.Administrador.get(nombre).get(1);
+                        ObjectOutputStream stream = new ObjectOutputStream(socket.getOutputStream());
+                        stream.writeObject(reunionReceived);
+                    }
 
                     System.out.println(reunionReceived.toString());
 

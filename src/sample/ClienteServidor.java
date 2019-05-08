@@ -1,9 +1,6 @@
 package sample;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Date;
@@ -34,6 +31,7 @@ public class ClienteServidor {
 
                     //accept a new socket connection from the MainServer
                     Socket mainServerClientSocket = serverSocket.accept();
+
 
                     //client handler
                     new Thread(new HandleAclient(mainServerClientSocket)).start();
@@ -69,6 +67,7 @@ public class ClienteServidor {
 
                 ObjectOutputStream objectOutputToClient = new ObjectOutputStream(
                         clientSocket.getOutputStream());
+                ObjectInputStream objectInputStream = new ObjectInputStream(clientSocket.getInputStream());
 
 
                 //TODO: we need to determine a proper way to handle listening events
@@ -76,6 +75,8 @@ public class ClienteServidor {
 
                 while (true) {
 
+                    Reunion reunion = (Reunion) objectInputStream.readObject();
+                    System.out.println(reunion.toString());
                 }
 
             } catch (Exception e) {

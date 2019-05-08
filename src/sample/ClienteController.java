@@ -13,6 +13,8 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class ClienteController implements Initializable{
@@ -58,7 +60,11 @@ public class ClienteController implements Initializable{
     }
 
     public void onPress2() throws IOException {
-        Reunion R = new Reunion(new ArrayList<String>(), Tema.getText(),Nombre.getText(),
+        String invitados = Invitados.getText();
+        String[] temp = invitados.split(",");
+        List<String> invitadosLista = Arrays.asList(temp);
+        invitadosLista.add(Nombre.getText());
+        Reunion R = new Reunion(new ArrayList<>(invitadosLista), Tema.getText(),Nombre.getText(),
                 lugar.getText(), Finicio.getText(), Ffinal.getText());
 
         objectToServer.writeObject(R);
