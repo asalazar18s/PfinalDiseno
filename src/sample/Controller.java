@@ -110,10 +110,13 @@ public class Controller implements Initializable{
 
                     for (int i = 0; i < reunionReceived.getInvitados().size(); i++)
                     {
-                        String nombre = reunionReceived.getInvitados().get(i);
-                        Socket socket = mServer.Administrador.get(nombre).get(1);
-                        ObjectOutputStream stream = new ObjectOutputStream(socket.getOutputStream());
-                        stream.writeObject(reunionReceived);
+                        String nombre = reunionReceived.getInvitados().get(i).trim();
+                        if(mServer.Administrador.containsKey(nombre))
+                        {
+                            Socket socket = mServer.Administrador.get(nombre).get(1);
+                            ObjectOutputStream stream = new ObjectOutputStream(socket.getOutputStream());
+                            stream.writeObject(reunionReceived);
+                        }
                     }
 
                     System.out.println(reunionReceived.toString());

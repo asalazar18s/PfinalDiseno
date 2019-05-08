@@ -9,6 +9,9 @@ public class ClienteServidor {
     //this class handles the clientServer
 
     public Integer socketNumber;
+    public ObjectOutputStream objectOutputToClient;
+    ObjectInputStream objectInputStream;
+
 
     ClienteServidor(Integer PortNumber) throws IOException {
         //constructor that establishes the clientServer
@@ -30,11 +33,14 @@ public class ClienteServidor {
                 while (true) {
 
                     //accept a new socket connection from the MainServer
+                    Socket socketCliente = serverSocket.accept();
                     Socket mainServerClientSocket = serverSocket.accept();
 
 
+
+
                     //client handler
-                    new Thread(new HandleAclient(mainServerClientSocket)).start();
+                    new Thread(new HandleAclient(socketCliente, mainServerClientSocket)).start();
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -45,11 +51,16 @@ public class ClienteServidor {
 
     class HandleAclient implements Runnable {
         private Socket clientSocket;
+        private Socket serverSocket;
 
+        public HandleAclient()
+        {
 
-        public HandleAclient(Socket clientSocket) {
+        }
+
+        public HandleAclient(Socket clientSocket, Socket serverSocket) {
             this.clientSocket = clientSocket;
-
+            this.serverSocket = serverSocket;
 
         }
 
@@ -58,16 +69,13 @@ public class ClienteServidor {
             try {
                 //input/output handler for clientSocket might have to change to objectInput...
                 //only read from never write to
-                DataInputStream inputFromClient = new DataInputStream(
-                        clientSocket.getInputStream());
 
                 //input/output handler for serverSocket might have to change to objectInput...
                 //only write to
 
+                objectOutputToClient = new ObjectOutputStream(clientSocket.getOutputStream());
+                objectInputStream = new ObjectInputStream(serverSocket.getInputStream());
 
-                ObjectOutputStream objectOutputToClient = new ObjectOutputStream(
-                        clientSocket.getOutputStream());
-                ObjectInputStream objectInputStream = new ObjectInputStream(clientSocket.getInputStream());
 
 
                 //TODO: we need to determine a proper way to handle listening events
@@ -76,8 +84,10 @@ public class ClienteServidor {
                 while (true) {
 
                     Reunion reunion = (Reunion) objectInputStream.readObject();
+                    //ObjectOutputStream output = new ObjectOutputStream(socket.getOutputStream());
                     objectOutputToClient.writeObject(reunion);
-                    System.out.println(reunion.toString());
+                    objectOutputToClient.reset();
+                    //System.out.println(reunion.toString());
                 }
 
             } catch (Exception e) {

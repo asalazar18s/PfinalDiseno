@@ -49,6 +49,8 @@ public class ClienteController implements Initializable{
     @FXML
     public TextArea mensajeArea;
 
+    public String mensaje;
+
 
     public void onPress() throws IOException {
         System.out.println("");
@@ -60,6 +62,10 @@ public class ClienteController implements Initializable{
     public void onPress2() throws IOException {
         String invitados = Invitados.getText();
         String[] temp = invitados.split(",");
+        for (int i = 0; i < temp.length; i++)
+        {
+            temp[i].trim();
+        }
         List<String> invitadosLista = Arrays.asList(temp);
         //invitadosLista.add(Nombre.getText());
         Reunion R = new Reunion(new ArrayList<>(invitadosLista), Tema.getText(),Nombre.getText(),
@@ -71,6 +77,7 @@ public class ClienteController implements Initializable{
     }
     public void onPress3() throws IOException {
         //TODO:Rodrigo porfavor no te brajes haz el combobox y el refresh
+        //mensajeArea.appendText(mensaje);
 
     }
 
@@ -87,6 +94,7 @@ public class ClienteController implements Initializable{
 
             //create a socket to the clientServer
             Socket socketToCServer = new Socket("localhost", cs.socketNumber);
+            System.out.println(socketToCServer.toString());
 
             // Create an input stream to receive data from the clientServer
             fromServerClient = new DataInputStream(socketToCServer.getInputStream());
@@ -146,15 +154,9 @@ public class ClienteController implements Initializable{
                 {
                     Reunion reunion = (Reunion) objectInputStream.readObject();
                     //Platform.runLater(new Runnable() {public void run() {mensajeArea.appendText(reunion.toString());}});
-                    Platform.runLater(new Runnable()
-                    {
-                        @Override
-                        public void run()
-                        {
-                            String mensaje = reunion.toString();
-                            mensajeArea.appendText(mensaje);
-                        }
-                    });
+                    mensaje = reunion.toString();
+                    //System.out.println(mensaje + "***");
+                    mensajeArea.appendText(mensaje);
                 }
 
             } catch (Exception e) {
