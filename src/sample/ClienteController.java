@@ -1,15 +1,13 @@
 package sample;
 
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
+import java.io.*;
 import java.net.Socket;
 import java.net.URL;
 import java.util.ArrayList;
@@ -63,7 +61,7 @@ public class ClienteController implements Initializable{
         String invitados = Invitados.getText();
         String[] temp = invitados.split(",");
         List<String> invitadosLista = Arrays.asList(temp);
-        invitadosLista.add(Nombre.getText());
+        //invitadosLista.add(Nombre.getText());
         Reunion R = new Reunion(new ArrayList<>(invitadosLista), Tema.getText(),Nombre.getText(),
                 lugar.getText(), Finicio.getText(), Ffinal.getText());
 
@@ -105,10 +103,68 @@ public class ClienteController implements Initializable{
 
             //send the port  and the name of the client that was established for the clientServer to the MainServer
             toServer.writeUTF(toSend);
+
+            new Thread(new HandleAclient(socketToCServer)).start();
+
         }
         catch (Exception ex) {
             ex.printStackTrace();
         }
+    }
+
+    class HandleAclient implements Runnable {
+        private Socket clientSocket;
+
+
+        public HandleAclient(Socket clientSocket) {
+            this.clientSocket = clientSocket;
+
+
+        }
+
+        //thread to be run
+        public void run() {
+            try {
+                //input/output handler for clientSocket might have to change to objectInput...
+                //only read from never write to
+                DataInputStream inputFromClient = new DataInputStream(
+                        clientSocket.getInputStream());
+
+                //input/output handler for serverSocket might have to change to objectInput...
+                //only write to
+
+
+                ObjectOutputStream objectOutputToClient = new ObjectOutputStream(
+                        clientSocket.getOutputStream());
+                ObjectInputStream objectInputStream = new ObjectInputStream(clientSocket.getInputStream());
+
+
+                //TODO: we need to determine a proper way to handle listening events
+                //this loop handles listening of changes from mainServer side.
+
+                while (true)
+                {
+                    Reunion reunion = (Reunion) objectInputStream.readObject();
+                    //Platform.runLater(new Runnable() {public void run() {mensajeArea.appendText(reunion.toString());}});
+                    Platform.runLater(new Runnable()
+                    {
+                        @Override
+                        public void run()
+                        {
+                            String mensaje = reunion.toString();
+                            mensajeArea.appendText(mensaje);
+                        }
+                    });
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+
+        }
 
     }
 }
+
+

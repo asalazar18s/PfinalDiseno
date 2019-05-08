@@ -76,6 +76,7 @@ public class ClienteServidor {
                 while (true) {
 
                     Reunion reunion = (Reunion) objectInputStream.readObject();
+                    objectOutputToClient.writeObject(reunion);
                     System.out.println(reunion.toString());
                 }
 
